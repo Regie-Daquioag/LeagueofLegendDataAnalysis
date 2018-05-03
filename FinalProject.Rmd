@@ -1,0 +1,65 @@
+---
+title: "Final Project"
+author: "Regie Daquioag and Carlos Huizar"
+date: "May 03, 2018"
+output: html_document
+---
+
+<!-- change echo=FALSE to echo=TRUE to show code -->
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(prompt=TRUE, comment="", echo=TRUE)
+```
+
+```{r}
+dat = read.csv("https://raw.githubusercontent.com/Regie-Daquioag/LeagueofLegendDataAnalysis/master/games.csv")
+
+dat$seasonId = NULL
+
+dat$t2_ban1 = NULL
+dat$t2_ban2 = NULL
+dat$t2_ban3 = NULL
+dat$t2_ban4 = NULL
+dat$t2_ban5 = NULL
+
+dat$t1_ban1 = NULL
+dat$t1_ban2 = NULL
+dat$t1_ban3 = NULL
+dat$t1_ban4 = NULL
+dat$t1_ban5 = NULL
+
+dat$t1_champ1id = NULL
+dat$t1_champ2id = NULL
+dat$t1_champ3id = NULL
+dat$t1_champ4id = NULL
+dat$t1_champ5id = NULL
+
+dat$t2_champ1id = NULL
+dat$t2_champ2id = NULL
+dat$t2_champ3id = NULL
+dat$t2_champ4id = NULL
+dat$t2_champ5id = NULL
+
+dat$t1_champ1_sum1 = NULL
+dat$t1_champ2_sum1 = NULL
+dat$t1_champ3_sum1 = NULL
+dat$t1_champ4_sum1 = NULL
+dat$t1_champ5_sum1 = NULL
+dat$t1_champ1_sum2 = NULL
+dat$t1_champ2_sum2 = NULL
+dat$t1_champ3_sum2 = NULL
+dat$t1_champ4_sum2 = NULL
+dat$t1_champ5_sum2 = NULL
+
+dat$t2_champ1_sum1 = NULL
+dat$t2_champ2_sum1 = NULL
+dat$t2_champ3_sum1 = NULL
+dat$t2_champ4_sum1 = NULL
+dat$t2_champ5_sum1 = NULL
+dat$t2_champ1_sum2 = NULL
+dat$t2_champ2_sum2 = NULL
+dat$t2_champ3_sum2 = NULL
+dat$t2_champ4_sum2 = NULL
+dat$t2_champ5_sum2 = NULL
+
+summary(dat)
+```
