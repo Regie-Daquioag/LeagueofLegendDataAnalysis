@@ -72,5 +72,6 @@ dat$t2_champ3_sum2 = NULL
 dat$t2_champ4_sum2 = NULL
 dat$t2_champ5_sum2 = NULL
 
+#Summary of Data
 summary(dat)
 ```
