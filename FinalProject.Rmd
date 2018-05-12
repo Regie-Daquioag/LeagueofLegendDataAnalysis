@@ -7,6 +7,9 @@ output: html_document
 
 <!-- change echo=FALSE to echo=TRUE to show code -->
 ```{r global_options, include=FALSE}
+library(rpart)
+library(rpart.plot)
+library(maptree)
 knitr::opts_chunk$set(prompt=TRUE, comment="", echo=TRUE)
 dat = read.csv("https://raw.githubusercontent.com/Regie-Daquioag/LeagueofLegendDataAnalysis/master/games.csv")
 ```
@@ -71,7 +74,67 @@ dat$t2_champ2_sum2 = NULL
 dat$t2_champ3_sum2 = NULL
 dat$t2_champ4_sum2 = NULL
 dat$t2_champ5_sum2 = NULL
+```
 
-#Summary of Data
-summary(dat)
+##Histograms showing some predictors that willl be used
+```{r}
+par(mfrow=c(2,3))
+colors = c("grey", "blue", "red")
+barplot(table(dat$firstBlood), main="First Blood", col=colors)
+barplot(table(dat$firstTower), main="First Tower", col=colors)
+barplot(table(dat$firstInhibitor), main="First Inhibitor", col=colors)
+barplot(table(dat$firstBaron), main="First Baron", col=colors)
+barplot(table(dat$firstDragon), main="First Dragon", col=colors)
+barplot(table(dat$firstRiftHerald), main="First Rift Herald", col=colors)
+```
+
+##Logistic Regression Model
+```{r}
+tr_rows=sample(nrow(dat), 0.75 * nrow(dat))
+tr_dat = dat[tr_rows,]
+te_dat = dat[-tr_rows,]
+
+fit = glm(winner-1 ~ firstBlood + firstTower, data=tr_dat, family=binomial)
+
+y = predict(fit, newdata=te_dat, type="response")
+predicts = as.numeric(y > 0.55)
+actuals = te_dat$winner-1
+conf_mtx = table(predicts, actuals)
+conf_mtx
+rate = mean(predicts == actuals)
+round(rate, 2)
+
+plot(density(y[actuals == 1]), col="red", main="Double Density for League of Lengends Games")
+lines(density(y[actuals == 0]), col="blue")
+```
+
+```{r}
+prec_recall_summary = function(predicts, actuals) {
+  thresh = seq(0, 1, length.out=65)
+  prec_rec = data.frame()
+  actuals = factor(as.numeric(actuals))
+  for (th in thresh) {
+    predicts = factor(as.numeric(y >= th), levels=c("0","1"))
+    prec_rec = rbind(prec_rec, as.vector(table(predicts, actuals)))
+  }
+  names(prec_rec) = c("TN", "FP", "FN", "TP")
+  prec_rec$threshold = thresh
+  prec_rec$precision = prec_rec$TP/(prec_rec$TP + prec_rec$FP)
+  prec_rec$recall    = prec_rec$TP/(prec_rec$TP + prec_rec$FN)
+  prec_rec$false_pos = prec_rec$FP/(prec_rec$FP + prec_rec$TN)
+  prec_rec$true_pos = prec_rec$TP/(prec_rec$TP + prec_rec$FN)
+  return(prec_rec)
+}
+prec_rec1 = prec_recall_summary(predicts, actuals)
+plot(prec_rec1$true_pos ~ prec_rec1$false_pos, xlab="False Positive", ylab="True Positive", type="l", col="red4", main="ROC")
+```
+
+##Decision Tree: Classification
+```{r}
+fit = rpart(winner-1 ~ ., data=tr_dat, method="class")
+prp(fit, extra=1, varlen=-10, main="classification tree for blue/red team.", box.col=c("dodgerblue", "firebrick1")[fit$frame$yval])
+predicted = predict(fit, te_dat, type="class")
+actual = te_dat$winner-1
+table(actual, predicted)
+mean(actual == predicted)
 ```
