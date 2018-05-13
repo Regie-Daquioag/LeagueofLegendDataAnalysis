@@ -18,6 +18,7 @@ dat = read.csv("https://raw.githubusercontent.com/Regie-Daquioag/LeagueofLegendD
 
 ## Project Introduction
 
+In this project we are going to explore the influences that help teams win games in League of Legends. In LoL there are various of factors that can help win the game such as getting kills and taking objectives on the map. Teams use these to obtain gold that helps make their character stronger and the winner is decided by whoever takes the opponents base first. We are going to explore the various of factors that can help win the game and decside which are the most important to focus on. 
 
 ## Project Data
 
@@ -79,52 +80,31 @@ dat$t2_champ5_sum2 = NULL
 ```
 ##Data Exploration
 
+The goal of these first barplots is to find out what feature is more impactful in games and what teams should be focusing on. 
+
 ```{r}
+colors = c("blue", "red")
+colors2 = c("red", "blue")
 tb = sort(table(dat[dat$firstBlood == "1",]$winner))
-barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins")
-
-# Team One
-# Only taking first blood there is a 59% Chance you will win the game
-# 15532
-# 10581
-# -----
-# 26113
-
+barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors)
 tb = sort(table(dat[dat$firstBlood == "2",]$winner))
-barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins")
+barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors2)
 
-# Team Two
-# Only taking first blood there is a 59% chance you will win the game
-# 14575
-# 10247
-# -----
-# 24822
+#Using these two bar plots we found that teams that had been able to secure first blood won 59% of the games that were played. This is without influence from other features so then now we will check the first tower.
 
 tb = sort(table(dat[dat$firstTower == "1",]$winner))
-barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins")
-#By itself a team that has taken first tower has a 70% chance to win the game
-
+barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors)
 tb = sort(table(dat[dat$firstTower == "2",]$winner))
-barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins")
+barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors2)
 
+#Next we tested the first tower win rate and it is significantly larger than the first blood rates, increasing to a 70% win rate for teams that were able to collect the first tower gold. This makes a lot of sense because if a team takes that tower they now have tempo and can move to another part of the map to take another tower.
 
 tb = sort(table(dat[dat$firstBlood == "1" & dat$firstTower == "1",]$winner))
-barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins")
-
-# Team One   75% Chance to win the game
-# 11888
-#  4021
-# -----
-# 15909
-
+barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors)
 tb = sort(table(dat[dat$firstBlood == "1" & dat$firstTower == "2",]$winner))
-barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins")
+barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors2)
 
-# Team Two   75% Chance to win the game
-# 10849
-#  3695
-# -----      
-# 14544   
+#Now if we combine the two features we increase the win percentage to 75%. It seems underwhelming compared to the difference with first tower and first blood. However, league is a team game are there are many more things that can influence the game, one of those being the player which we cannot account for.   
 ```  
 
 ##Histograms showing some predictors that willl be used
@@ -191,6 +171,8 @@ table(actual, predicted)
 mean(actual == predicted)
 ```
 
+Using this decision tree, we are able to find out which team won depending on the number of tower kills. There seems to be a consistent pattern with this because taking towers gives a significant amount of gold and that gold can be used to help the team get further ahead.
+
 ## Assessing the decision tree
 ```{r}
 te_errs = c()
@@ -220,5 +202,5 @@ tr_sizes = seq(100, nrow(tr_dat), length.out=10)
  legend('topright', c("Train error", "Test error"), lty = c(1,1), lwd = c(2.5, 2.5), col = c("red", "blue"), cex=0.7)
 ```
 
-
+Studying this learning curve shows that out lines are extremely close together, this means that we have a lot of bias. We can try and fix this by getting more features or trying to derive better features from the current data set that we have, however, obtaining more data will not help us with this.
 
