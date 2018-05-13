@@ -10,7 +10,6 @@ output: html_document
 library(rpart)
 library(rpart.plot)
 library(maptree)
-library(e1071)
 set.seed(123)
 knitr::opts_chunk$set(prompt=TRUE, comment="", echo=TRUE)
 dat = read.csv("https://raw.githubusercontent.com/Regie-Daquioag/LeagueofLegendDataAnalysis/master/games.csv")
@@ -25,7 +24,8 @@ Data Source: https://www.kaggle.com/datasnaek/league-of-legends/data
 
 
 ## Data cleaning and preprocessing
-
+This project relied heavily on categorical data so it was of the utmost importance to determine who the winner of a match will be, they winner would either be the
+blue team (1) or the red team (2). The main question was what data we wanted to look at and we determined that many of the data provided would not be necessary. For example, we need not care about which champions made it through the pick/ban phase and what summoner spells were used.
 
 ```{r}
 #Erase the season ID as it provides no statistical value for the set
@@ -127,7 +127,6 @@ barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins")
 # 14544   
 ```  
 
-##Histograms showing some predictors that willl be used
 ```{r}
 par(mfrow=c(2,3))
 colors = c("grey", "blue", "red")
@@ -139,7 +138,10 @@ barplot(table(dat$firstDragon), main="First Dragon", col=colors)
 barplot(table(dat$firstRiftHerald), main="First Rift Herald", col=colors)
 ```
 
-##Logistic Regression Model
+The graphs above show that the team that gets the first blood, first tower, first inhibitor and the herald is usually the blue team. For some reason it appears that blue side of the map has a natural advantage because it is easier to look bottom-left to top-right than it is to look top-right to bottom-left. When it comes to getting first baron, it appears that the red side usually gets it, One reason for this is because there is something called a blasting plant that can help them sneak they baron without letting the blue side know. 
+
+
+####Logistic Regression Model
 ```{r}
 tr_rows=sample(nrow(dat), 0.75 * nrow(dat))
 tr_dat = dat[tr_rows,]
@@ -155,9 +157,12 @@ conf_mtx
 rate = mean(predicts == actuals)
 round(rate, 2)
 
-plot(density(y[actuals == 1]), col="red", main="Double Density for League of Lengends Games")
+plot(density(y[actuals == 1]), col="red", main="Double Density for League of Lengends Games", ylim=c(0,7))
 lines(density(y[actuals == 0]), col="blue")
 ```
+
+The double density above demostrates that if the blue team is winner, the chance for the red team is not that great, however when red team chaces up the graph shifts to there favor and the blue team is now at the disadvantage. The two plots seem to mirror each other with the blue curve being slight bigger because of the natural advantage mentioned before. 
+
 
 ```{r}
 prec_recall_summary = function(predicts, actuals) {
@@ -181,7 +186,9 @@ plot(prec_rec1$true_pos ~ prec_rec1$false_pos, xlab="False Positive", ylab="True
 plot(prec_rec1$precision ~ prec_rec1$recall, xlab="Recall", ylab="Precision", type="l", col="red4", main="Precision-Recall Curve")
 ```
 
-##Decision Tree: Classification
+The ROC curve above shows that as the true positive rate increases the flase positive rate starts to increase as well. It appears that around 70% of true positives there is around 28% of flase positive. Furthermore from 70% - 100%  of true positives, the flase positive is slowing increasing but not as fast it did in the 0% - 28%. 
+
+####Decision Tree: Classification
 ```{r}
 fit = rpart(winner ~ ., data=tr_dat, method="class")
 prp(fit, extra=1, varlen=-10, main="classification tree for blue/red team.", box.col=c("dodgerblue", "firebrick1")[fit$frame$yval])
@@ -191,7 +198,7 @@ table(actual, predicted)
 mean(actual == predicted)
 ```
 
-## Assessing the decision tree
+####Assessing the decision tree
 ```{r}
 te_errs = c()
 tr_errs = c()
@@ -220,5 +227,5 @@ tr_sizes = seq(100, nrow(tr_dat), length.out=10)
  legend('topright', c("Train error", "Test error"), lty = c(1,1), lwd = c(2.5, 2.5), col = c("red", "blue"), cex=0.7)
 ```
 
-
+## Project Introduction
 
