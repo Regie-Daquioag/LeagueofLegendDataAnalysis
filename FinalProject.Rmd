@@ -10,6 +10,7 @@ output: html_document
 library(rpart)
 library(rpart.plot)
 library(maptree)
+library(e1071)
 set.seed(123)
 knitr::opts_chunk$set(prompt=TRUE, comment="", echo=TRUE)
 dat = read.csv("https://raw.githubusercontent.com/Regie-Daquioag/LeagueofLegendDataAnalysis/master/games.csv")
@@ -218,3 +219,6 @@ tr_sizes = seq(100, nrow(tr_dat), length.out=10)
  lines(te_errs, type = "b", col = "blue")
  legend('topright', c("Train error", "Test error"), lty = c(1,1), lwd = c(2.5, 2.5), col = c("red", "blue"), cex=0.7)
 ```
+
+
+
