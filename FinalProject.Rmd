@@ -82,6 +82,8 @@ dat$t2_champ5_sum2 = NULL
 
 The goal of these first barplots is to find out what feature is more impactful in games and what teams should be focusing on. 
 
+*First Blood*
+
 ```{r}
 colors = c("blue", "red")
 colors2 = c("red", "blue")
@@ -91,7 +93,11 @@ tb = sort(table(dat[dat$firstBlood == "2",]$winner))
 barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors2)
 
 #Using these two bar plots we found that teams that had been able to secure first blood won 59% of the games that were played. This is without influence from other features so then now we will check the first tower.
+```
 
+*First Tower*
+
+```{r}
 tb = sort(table(dat[dat$firstTower == "1",]$winner))
 barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors)
 tb = sort(table(dat[dat$firstTower == "2",]$winner))
@@ -99,6 +105,11 @@ barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors
 
 #Next we tested the first tower win rate and it is significantly larger than the first blood rates, increasing to a 70% win rate for teams that were able to collect the first tower gold. This makes a lot of sense because if a team takes that tower they now have tempo and can move to another part of the map to take another tower.
 
+```
+
+*First Blood and First Tower*
+
+```{r}
 tb = sort(table(dat[dat$firstBlood == "1" & dat$firstTower == "1",]$winner))
 barplot(tb,horiz = T,las=2, cex.names = 0.5, xlab="Number of Wins", col = colors)
 tb = sort(table(dat[dat$firstBlood == "1" & dat$firstTower == "2",]$winner))
