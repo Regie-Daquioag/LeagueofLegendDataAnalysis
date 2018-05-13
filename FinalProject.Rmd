@@ -1,5 +1,5 @@
 ---
-title: "Final Project"
+title: "Statistical Analysis of League of Legends data"
 author: "Regie Daquioag and Carlos Huizar"
 date: "May 03, 2018"
 output: html_document
